@@ -239,6 +239,33 @@ mock_treatments = [
         duration="Ongoing",
         notes="Use fragrance-free moisturizer",
         completed=False
+    ),
+    TreatmentItem(
+        id="4",
+        name="Urgent Specialist Referral",
+        dosage="Immediate consultation",
+        frequency="ASAP",
+        duration="Immediate",
+        notes="Contact dermatologist for surgical evaluation",
+        completed=False
+    ),
+    TreatmentItem(
+        id="5",
+        name="Sun Protection",
+        dosage="Use suncreen to prevent changes in moles",
+        frequency="Daily",
+        duration="Ongoing",
+        notes="Use fragrance-free moisturizer",
+        completed=False
+    ),
+    TreatmentItem(
+       id= "6",
+        name= "Sun Protection",
+        dosage= "SPF 30+",
+        frequency= "Daily",
+        duration= "Ongoing",
+        notes= "Use sunscreen to prevent changes in moles",
+        completed=False
     )
 
 ]
@@ -342,8 +369,12 @@ async def get_treatments():
 @app.put("/api/v1/treatments/{treatment_id}")
 async def update_treatment(treatment_id: str, update_data: TreatmentUpdate):
     """Update treatment completion status"""
+    # Extract the base ID from the prefixed treatment_id (e.g., "nv_5" -> "5")
+    base_id = treatment_id.split('_')[-1] if '_' in treatment_id else treatment_id
+    
     for treatment in mock_treatments:
-        if treatment.id == treatment_id:
+        # Compare with both the full ID and the base ID for compatibility
+        if treatment.id == treatment_id or treatment.id == base_id:
             treatment.completed = update_data.completed
             return treatment
     raise HTTPException(status_code=404, detail="Treatment not found")
